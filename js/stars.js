@@ -83,10 +83,11 @@ export class StarsManager {
     canvas.height = window.innerHeight;
     document.body.insertBefore(canvas, this.container);
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     const stars = document.querySelectorAll('.star.large, .star.bright');
 
     const drawConstellations = () => {
+      // Limpar o canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const starPositions = Array.from(stars).map(star => ({
@@ -111,8 +112,20 @@ export class StarsManager {
           }
         }
       }
+
+      // Redesenhar continuamente para evitar que o canvas fique preto
+      requestAnimationFrame(drawConstellations);
     };
 
-    setTimeout(drawConstellations, 100);
+    // Iniciar o loop de desenho
+    setTimeout(() => {
+      requestAnimationFrame(drawConstellations);
+    }, 100);
+
+    // Redimensionar canvas quando a janela muda de tamanho
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
   }
 }
